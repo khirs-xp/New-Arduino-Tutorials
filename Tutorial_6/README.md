@@ -1,4 +1,4 @@
-# Arduino Tutorial 4: Understanding Arduino Variables
+# Arduino Tutorial 6: Build an LED Binary Counter
 > [Arduino_Code](./Tutorial_6.ino)
 
-![Conditional Button ](../img/Tutorial_6.png);
+![Conditional Button ](../img/Tutorial_6.png)

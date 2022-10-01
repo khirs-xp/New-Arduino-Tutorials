@@ -1,7 +1,7 @@
 # Arduino Tutorial 4: Understanding Arduino Variables
 > [Arduino_Code](./Tutorial_4.ino)
 
-![Conditional Button ](../img/Tutorial_3.png)
+![Conditional Button ](../img/Tutorial_4.png)
 
 # Arduino Tutorial 4: Understanding Arduino Variables Homework
 > [Arduino_Code](./Tutorial_4_HW.ino)

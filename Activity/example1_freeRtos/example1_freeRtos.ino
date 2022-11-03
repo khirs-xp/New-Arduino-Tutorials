@@ -1,36 +1,48 @@
 #include <Arduino_FreeRTOS.h>
-#define RED 6
-#define YELLOW 7
-#define BLUE 8
 
-void setup() {
-  xTaskCreate(redLedControllerTask, "RED LED Task", 128, NULL, 1, NULL);
-  xTaskCreate(blueLedControllerTask, "BLUE LED Task", 128, NULL, 1, NULL);
-  xTaskCreate(yellowLedControllerTask, "YELLOW LED Task", 128, NULL, 1, NULL);
+#define LED_RED 8
+#define LED_YELLOW 7
+#define LED_GREEN 6
+
+// Create Task
+void setup()
+{
+  xTaskCreate(redLedControllerTask, "RED LED TASK", 128, NULL, 1, NULL);
+  xTaskCreate(yellowLedControllerTask, "YELLOW LED TASK", 128, NULL, 1, NULL);
+  xTaskCreate(greenLedControllerTask, "GREEN LED TASK", 128, NULL, 1, NULL);
 }
 
-void redLedControllerTask(void*pvParameters){
-  pinMode(RED, OUTPUT);
-  while(1){
+// LED Function
+void redLedControllerTask(void *pvParameters)
+{
+  pinMode(LED_RED, OUTPUT);
+  while (1)
+  {
     delay(500);
-    digitalWrite(RED, digitalRead(RED) ^ 1);
+    digitalWrite(LED_RED, digitalRead(LED_RED) ^ 1); // Blink
   }
 }
 
-void blueLedControllerTask(void*pvParameters){
-  pinMode(BLUE, OUTPUT);
-  while(1){
+void yellowLedControllerTask(void *pvParameters)
+{
+  pinMode(LED_YELLOW, OUTPUT);
+  while (1)
+  {
     delay(500);
-    digitalWrite(BLUE, digitalRead(BLUE) ^ 1);
+    digitalWrite(LED_YELLOW, digitalRead(LED_YELLOW) ^ 1); // Blink
   }
 }
 
-void yellowLedControllerTask(void*pvParameters){
-  pinMode(YELLOW, OUTPUT);
-  while(1){
+void greenLedControllerTask(void *pvParameters)
+{
+  pinMode(LED_GREEN, OUTPUT);
+  while (1)
+  {
     delay(500);
-    digitalWrite(YELLOW, digitalRead(YELLOW) ^ 1);
+    digitalWrite(LED_GREEN, digitalRead(LED_GREEN) ^ 1); // Blink
   }
 }
 
-void loop() {}
+void loop()
+{
+}

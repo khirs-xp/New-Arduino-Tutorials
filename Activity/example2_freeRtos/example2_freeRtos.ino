@@ -8,7 +8,6 @@ const uint16_t *redLed = (uint16_t *)LED_RED;
 const uint16_t *yellowLed = (uint16_t *)LED_YELLOW;
 const uint16_t *greenLed = (uint16_t *)LED_GREEN;
 
-// Create Task
 void setup()
 {
     xTaskCreate(LedControllerTask, "RED LED TASK", 128, (void *)redLed, 1, NULL);
@@ -16,7 +15,6 @@ void setup()
     xTaskCreate(LedControllerTask, "GREEN LED TASK", 128, (void *)greenLed, 1, NULL);
 }
 
-// Function Controller
 void LedControllerTask(void *pvParameters)
 {
     pinMode(LED_RED, OUTPUT);

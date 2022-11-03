@@ -4,7 +4,6 @@
 #define LED_YELLOW 7
 #define LED_GREEN 6
 
-// Create Task
 void setup()
 {
   xTaskCreate(redLedControllerTask, "RED LED TASK", 128, NULL, 1, NULL);
@@ -12,7 +11,6 @@ void setup()
   xTaskCreate(greenLedControllerTask, "GREEN LED TASK", 128, NULL, 1, NULL);
 }
 
-// LED Function
 void redLedControllerTask(void *pvParameters)
 {
   pinMode(LED_RED, OUTPUT);

@@ -1,90 +1,67 @@
-// DEFINE LED
-#define LED_1 10
-#define LED_2 11
-#define LED_3 12
-#define LED_4 13
-
-// DEFINE BUTTON
-#define BUTTON_1 2
-#define BUTTON_2 3
-#define BUTTON_3 4
-#define BUTTON_SUBMIT 5
-#define BUTTON_RESET 6
-
-// LED & BUTTON ARRAY
-unsigned int LED[] = {LED_1, LED_2, LED_3, LED_4};
-unsigned int BUTTON[] = {BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_SUBMIT, BUTTON_RESET};
-
-// MEMORIES
-unsigned int MEM[] = {0, 0, 0};
-
-// INTEGER
-int sum = 0;
+int step = 0;
+int btn[] = {2, 3, 4, 5, 6};
+int led[] = {10, 11, 12, 13};
+int buttonState[] = {LOW, LOW, LOW, LOW, LOW};
+int lastButtonState[] = {LOW, LOW, LOW, LOW, LOW};
+int mem[] = {0, 0, 0};
+int pressed4 = 0;
+int pressed3 = 0;
 int num[] = {0, 0};
-
-// CHECK PRESSED
-unsigned int IS_BUTTON_SUBMIT_PRESSED = 0;
-unsigned int IS_BUTTON_RESET_PRESSED = 0;
-
-// DEBOUNCE TIME
-unsigned long LAST_DEBOUNCE_TIME[] = {0, 0, 0, 0, 0};
-
-// BUTTON STATE
-unsigned int BUTTON_STATE[] = {LOW, LOW, LOW, LOW, LOW};
-unsigned int LAST_BUTTON_STATE[] = {LOW, LOW, LOW, LOW, LOW};
-
-// ROUND
-unsigned int ROUND = 0;
-
+int sum = 0;
+long long lastDebounceTime[] = {0, 0, 0, 0, 0};
 void setup()
 {
+    Serial.begin(9600);
     for (int i = 0; i < 5; i++)
     {
-        pinMode(LED[i], OUTPUT);
-        pinMode(LED[i], INPUT);
+        pinMode(btn[i], INPUT);
+        pinMode(led[i], OUTPUT);
     }
 }
 
-// FUNCTION DEBOUNCE
 void debounce(int b)
 {
-    int buttonState = digitalRead(BUTTON_STATE[b]);
-    if (LAST_BUTTON_STATE != buttonState)
+    int reading = digitalRead(btn[b]);
+    if (lastButtonState[b] != reading)
     {
-        LAST_BUTTON_STATE = millis();
+        lastDebounceTime[b] = millis();
     }
-    if (millis() - LAST_DEBOUNCE_TIME[b] >= 50)
+
+    if (millis() - lastDebounceTime[b] >= 50)
     {
-        BUTTON_STATE[b] = buttonState;
+        buttonState[b] = reading;
     }
-    LAST_BUTTON_STATE[b] = buttonState;
+    lastButtonState[b] = reading;
 }
 
 void resetMem()
 {
     for (int i = 0; i < 3; i++)
     {
-        MEM[i] = 0;
+        mem[i] = 0;
     }
 }
 
 void show(int tmp)
 {
+    Serial.print("show ");
+    Serial.println(tmp);
     for (int i = 0; i < 4; i++)
     {
-        digitalWrite(LED[i], tmp % 2);
+        digitalWrite(led[3 - i], tmp % 2);
         tmp /= 2;
     }
 }
 
 void reset()
 {
+    step = 0;
     for (int i = 0; i < 4; i++)
     {
-        digitalWrite(LED[i], LOW);
+        digitalWrite(led[i], LOW);
     }
     num[0] = 0;
-    num[1] = 1;
+    num[1] = 0;
 }
 
 void loop()
@@ -93,44 +70,56 @@ void loop()
     {
         debounce(i);
     }
+
     for (int i = 0; i < 3; i++)
     {
-        if (BUTTON_STATE[i])
+        if (buttonState[i])
         {
-            MEM[i] = 1;
+            mem[i] = 1;
         }
     }
 
-    if (BUTTON_SUBMIT && !IS_BUTTON_SUBMIT_PRESSED && ROUND < 3)
+    if (buttonState[3] && !pressed3 && step < 3)
     {
-        IS_BUTTON_SUBMIT_PRESSED = 1;
-        if (ROUND < 2)
+
+        Serial.print("step = ");
+        Serial.println(step);
+        pressed3 = 1;
+        if (step < 2)
         {
             for (int i = 0; i < 3; i++)
             {
-                num[ROUND] *= 2;
-                num[ROUND] += MEM[i];
+                num[step] *= 2;
+                num[step] += mem[i];
+                Serial.println(mem[i]);
             }
             resetMem();
-            show(num[ROUND++]);
+            show(num[step++]);
         }
         else
         {
             sum = num[0] + num[1];
+            Serial.print("sum = ");
+            Serial.println(sum);
             show(sum);
         }
+
+        Serial.print(num[0]);
+        Serial.print(" ");
+        Serial.println(num[1]);
     }
-    else if (!BUTTON_SUBMIT)
+    else if (!buttonState[3])
     {
-        IS_BUTTON_SUBMIT_PRESSED = 0;
+        pressed3 = 0;
     }
-    else if (BUTTON_RESET && !IS_BUTTON_RESET_PRESSED)
+
+    if (buttonState[4] && !pressed4)
     {
         reset();
-        IS_BUTTON_RESET_PRESSED = 1;
+        pressed4 = 1;
     }
-    else if (!BUTTON_RESET)
+    else if (!buttonState[4])
     {
-        IS_BUTTON_RESET_PRESSED = 0;
+        pressed4 = 0;
     }
 }
